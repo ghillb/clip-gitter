@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -12,8 +12,14 @@
     <SelfContained>true</SelfContained>
     <PublishReadyToRun>true</PublishReadyToRun>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-
+  <ItemGroup>
+    <Compile Include="src/ClipGitter/Options.cs" />
+    <Compile Include="src/ClipGitter/Program.cs" />
+    <Compile Include="src/ClipGitter/ClipboardMonitor.cs" />
+    <Compile Include="src/ClipGitter/GitManager.cs" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="LibGit2Sharp" Version="0.29.0" />
@@ -21,5 +27,4 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
-
 </Project>
