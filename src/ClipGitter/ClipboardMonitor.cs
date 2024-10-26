@@ -16,6 +16,7 @@ public class ClipboardMonitor : IDisposable
     private readonly CancellationTokenSource _cts = new();
     private bool _disposed;
     private readonly IClipboard _clipboard;
+    private static int _counter = 0; 
 
     public ClipboardMonitor(ILogger<ClipboardMonitor> logger, GitManager gitManager, Options options)
     {
@@ -29,13 +30,8 @@ public class ClipboardMonitor : IDisposable
     {
         try
         {
-            // Start polling for clipboard changes
             _ = Task.Run(MonitorClipboardAsync);
-
-            // Start polling for git changes
             _ = Task.Run(PollGitChangesAsync);
-
-            // Keep the application running
             await Task.Delay(-1, _cts.Token);
         }
         catch (TaskCanceledException)
@@ -58,12 +54,12 @@ public class ClipboardMonitor : IDisposable
                     await SaveClipboardContentAsync(clipboardText);
                 }
 
-                await Task.Delay(1000, _cts.Token); // Check every second
+                await Task.Delay(1000, _cts.Token); 
             }
             catch (Exception ex) when (ex is not TaskCanceledException)
             {
                 _logger.LogError(ex, "Error in clipboard monitoring");
-                await Task.Delay(5000, _cts.Token); // Wait before retrying
+                await Task.Delay(5000, _cts.Token); 
             }
         }
     }
@@ -72,9 +68,16 @@ public class ClipboardMonitor : IDisposable
     {
         try
         {
-            bool historyMode = !_options.NoHistory; // Use NoHistory flag
-
-            if (historyMode)
+            if (_options.SingleFile)
+            {
+                _counter++;
+                string timestamp = DateTime.UtcNow.ToString("o");
+                string entry = $"#{_counter} - {timestamp}\n\n{content}\n\n#{_counter} - END\n";
+                string filePath = Path.Combine(_options.RepoPath, "clipboard.txt");
+                await File.AppendAllTextAsync(filePath, entry);
+                await _gitManager.CommitAndPushAsync("clipboard.txt", $"Added clipboard entry #{_counter}", _options.EnvFilePath); 
+            }
+            else if (!_options.NoHistory)
             {
                 var filename = $"clipboard_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
                 await File.WriteAllTextAsync(Path.Combine(_options.RepoPath, filename), content);
@@ -82,7 +85,7 @@ public class ClipboardMonitor : IDisposable
             }
             else
             {
-                var filename = "clip.txt";
+                var filename = "clipboard.txt";
                 await File.WriteAllTextAsync(Path.Combine(_options.RepoPath, filename), content);
                 await _gitManager.CommitAndForcePushAsync(filename, _options.EnvFilePath);
             }
@@ -105,7 +108,7 @@ public class ClipboardMonitor : IDisposable
             catch (Exception ex) when (ex is not TaskCanceledException)
             {
                 _logger.LogError(ex, "Error polling git changes");
-                await Task.Delay(5000, _cts.Token); // Wait before retrying
+                await Task.Delay(5000, _cts.Token); 
             }
         }
     }

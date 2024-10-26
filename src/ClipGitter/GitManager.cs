@@ -89,8 +89,6 @@ public class GitManager
                 using var repo = new Repository(_repoPath);
                 Commands.Stage(repo, filename);
                 var signature = repo.Config.BuildSignature(DateTimeOffset.Now);
-
-                // Amend the last commit if it exists, otherwise create a new one
                 var message = "Update clipboard content";
                 if (repo.Head.Tip != null)
                 {
@@ -101,7 +99,6 @@ public class GitManager
                 {
                     repo.Commit(message, signature, signature);
                 }
-
                 var remote = repo.Network.Remotes["origin"];
                 if (remote != null)
                 {
@@ -137,7 +134,6 @@ public class GitManager
                             CredentialsProvider = (_url, _user, _cred) => GetCredentials(envFilePath)
                         }
                     };
-
                     var signature = repo.Config.BuildSignature(DateTimeOffset.Now);
                     Commands.Pull(repo, signature, pullOptions);
                 }
