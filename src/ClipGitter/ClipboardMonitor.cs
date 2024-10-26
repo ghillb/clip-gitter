@@ -16,6 +16,7 @@ public class ClipboardMonitor : IDisposable
     private bool _disposed;
     private readonly IClipboard _clipboard;
     private static int _counter = 0;
+    private bool _firstPollCompleted = false; // Flag to track the first poll
 
     public ClipboardMonitor(ILogger<ClipboardMonitor> logger, GitManager gitManager, Options options)
     {
@@ -112,8 +113,18 @@ public class ClipboardMonitor : IDisposable
         {
             try
             {
-                await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
-                await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval), _cts.Token);
+                if (!_firstPollCompleted)
+                {
+                    _logger.LogInformation("Delaying first poll...");
+                    await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval));
+                    _firstPollCompleted = true;
+                    await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
+                }
+                else
+                {
+                    await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
+                    await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval), _cts.Token);
+                }
             }
             catch (Exception ex) when (ex is not TaskCanceledException)
             {
