@@ -10,6 +10,7 @@ A command-line tool for Windows that automatically syncs your clipboard content 
 - Automatic Git operations (commit, push, pull)
 - Supports authentication using username/password from a .env file
 - Single file output mode
+- **AES-256 Encryption using PBKDF2HMAC key derivation:** Encrypt clipboard content using a password provided via the `--encryption-pw` argument.
 
 ## Prerequisites
 
@@ -65,7 +66,7 @@ Important: Make sure to use the executable from the `publish` directory, as this
 Run the application from the command line with the following syntax:
 
 ```powershell
-.\ClipGitter.exe --repo <repository-path> [--poll-interval <seconds>] [--no-history] [--env-file <path_to_env_file>] [--single-file]
+.\ClipGitter.exe --repo <repository-path> [--poll-interval <seconds>] [--no-history] [--env-file <path_to_env_file>] [--single-file] [--encryption-pw <password>]
 ```
 
 ### Command Line Arguments
@@ -75,6 +76,7 @@ Run the application from the command line with the following syntax:
 - `--no-history`: Disable history mode (default: history mode enabled).
 - `--env-file` (Optional): Path to the `.env` file containing your GitHub credentials.
 - `--single-file`: Save all clipboard content to a single file named `clipboard.txt`. Each entry will be prepended with a timestamp and counter.
+- `--encryption-pw` (Optional): Password used to encrypt the clipboard content before saving.  If provided, encryption is enabled.
 
 ### Examples
 
@@ -91,6 +93,11 @@ Run the application from the command line with the following syntax:
 3. Single file mode:
    ```powershell
    .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --single-file
+   ```
+
+4. Encryption enabled:
+   ```powershell
+   .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --encryption-pw "MySecretPassword"
    ```
 
 ## Operating Modes
@@ -130,3 +137,4 @@ The source code includes:
 - Git operations using LibGit2Sharp
 - Cross-platform clipboard access using TextCopy
 - Asynchronous operations and error handling
+- **AES-256 Encryption with PBKDF2HMAC key derivation**

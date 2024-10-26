@@ -19,6 +19,7 @@
     <Compile Include="src/ClipGitter/Program.cs" />
     <Compile Include="src/ClipGitter/ClipboardMonitor.cs" />
     <Compile Include="src/ClipGitter/GitManager.cs" />
+    <Compile Include="src/ClipGitter/EncryptionManager.cs" /> <!-- Added this line -->
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />

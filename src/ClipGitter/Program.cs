@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using TextCopy;
 using System.IO;
 using ClipGitter;
+using System.Security.Cryptography;
 
 namespace ClipGitter
 {
@@ -43,6 +44,7 @@ namespace ClipGitter
                     Console.WriteLine($"History mode: {!options.NoHistory}");
                     Console.WriteLine($"Single-file mode: {options.SingleFile}");
                     Console.WriteLine($"Env file path: {options.EnvFilePath}");
+                    Console.WriteLine($"Encryption enabled: {!string.IsNullOrEmpty(options.EncryptionPassword)}");
                     Console.WriteLine("Press Ctrl+C to exit");
 
                     await monitor.StartMonitoringAsync();
