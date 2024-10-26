@@ -64,14 +64,14 @@ Important: Make sure to use the executable from the `publish` directory, as this
 Run the application from the command line with the following syntax:
 
 ```powershell
-.\ClipGitter.exe --repo <repository-path> [--poll-interval <seconds>] [--history <true|false>] [--env-file <path_to_env_file>]
+.\ClipGitter.exe --repo <repository-path> [--poll-interval <seconds>] [--no-history] [--env-file <path_to_env_file>]
 ```
 
 ### Command Line Arguments
 
 - `--repo` (Required): Path to the Git repository where clipboard content will be saved.
 - `--poll-interval` (Optional): How often to check for remote changes, in seconds (default: 30).
-- `--history` (Optional): Whether to preserve history of clipboard changes (default: true).
+- `--no-history`: Disable history mode (default: history mode enabled).
 - `--env-file` (Optional): Path to the `.env` file containing your GitHub credentials.
 
 ### Examples
@@ -83,7 +83,7 @@ Run the application from the command line with the following syntax:
 
 2. Non-history mode with custom polling interval and .env file:
    ```powershell
-   .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --poll-interval 45 --history false --env-file "C:\path\to\your\.env\file"
+   .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --poll-interval 45 --no-history --env-file "C:\path\to\your\.env\file"
    ```
 
 ## Operating Modes
