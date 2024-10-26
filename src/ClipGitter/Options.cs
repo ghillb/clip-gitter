@@ -21,4 +21,7 @@ public class Options
 
     [Option("encryption-pw", HelpText = "Password for clipboard encryption")]
     public string EncryptionPassword { get; set; } = string.Empty;
+
+    [Option("pull-only", HelpText = "Only pull changes from the repository; do not monitor the clipboard.")]
+    public bool PullOnly { get; set; }
 }

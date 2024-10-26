@@ -11,6 +11,8 @@ A command-line tool for Windows that automatically syncs your clipboard content 
 - Supports authentication using username/password from a .env file
 - Single file output mode
 - **AES-256 Encryption using PBKDF2HMAC key derivation:** Encrypt clipboard content using a password provided via the `--encryption-pw` argument.
+- **Pull-only mode:**  Pull changes from the repository periodically without monitoring the clipboard.
+
 
 ## Prerequisites
 
@@ -66,7 +68,7 @@ Important: Make sure to use the executable from the `publish` directory, as this
 Run the application from the command line with the following syntax:
 
 ```powershell
-.\ClipGitter.exe --repo <repository-path> [--poll-interval <seconds>] [--no-history] [--env-file <path_to_env_file>] [--single-file] [--encryption-pw <password>]
+.\ClipGitter.exe --repo <repository-path> [--poll-interval <seconds>] [--no-history] [--env-file <path_to_env_file>] [--single-file] [--encryption-pw <password>] [--pull-only]
 ```
 
 ### Command Line Arguments
@@ -77,6 +79,8 @@ Run the application from the command line with the following syntax:
 - `--env-file` (Optional): Path to the `.env` file containing your GitHub credentials.
 - `--single-file`: Save all clipboard content to a single file named `clipboard.txt`. Each entry will be prepended with a timestamp and counter.
 - `--encryption-pw` (Optional): Password used to encrypt the clipboard content before saving.  If provided, encryption is enabled.
+- `--pull-only` (Optional): Only pull changes from the repository; do not monitor the clipboard.
+
 
 ### Examples
 
@@ -99,6 +103,11 @@ Run the application from the command line with the following syntax:
    ```powershell
    .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --encryption-pw "MySecretPassword"
    ```
+
+5. Pull-only mode:
+    ```powershell
+    .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --pull-only
+    ```
 
 ## Operating Modes
 

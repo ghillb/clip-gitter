@@ -29,7 +29,10 @@ public class ClipboardMonitor : IDisposable
     {
         try
         {
-            _ = Task.Run(MonitorClipboardAsync);
+            if (!_options.PullOnly)
+            {
+                _ = Task.Run(MonitorClipboardAsync);
+            }
             _ = Task.Run(PollGitChangesAsync);
             await Task.Delay(-1, _cts.Token);
         }

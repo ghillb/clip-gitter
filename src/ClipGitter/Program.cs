@@ -45,6 +45,7 @@ namespace ClipGitter
                     Console.WriteLine($"Single-file mode: {options.SingleFile}");
                     Console.WriteLine($"Env file path: {options.EnvFilePath}");
                     Console.WriteLine($"Encryption enabled: {!string.IsNullOrEmpty(options.EncryptionPassword)}");
+                    Console.WriteLine($"Pull only mode: {options.PullOnly}");
                     Console.WriteLine("Press Ctrl+C to exit");
 
                     await monitor.StartMonitoringAsync();
