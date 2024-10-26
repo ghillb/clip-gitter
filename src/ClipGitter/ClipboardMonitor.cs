@@ -16,7 +16,6 @@ public class ClipboardMonitor : IDisposable
     private bool _disposed;
     private readonly IClipboard _clipboard;
     private static int _counter = 0;
-    private bool _firstPollCompleted = false; // Flag to track the first poll
 
     public ClipboardMonitor(ILogger<ClipboardMonitor> logger, GitManager gitManager, Options options)
     {
@@ -24,6 +23,7 @@ public class ClipboardMonitor : IDisposable
         _gitManager = gitManager;
         _options = options;
         _clipboard = new Clipboard();
+        _lastClipboardContent = _clipboard.GetText();
     }
 
     public async Task StartMonitoringAsync()
@@ -53,6 +53,7 @@ public class ClipboardMonitor : IDisposable
 
                 if (!string.IsNullOrEmpty(clipboardText) && clipboardText != _lastClipboardContent)
                 {
+                    _logger.LogInformation("Clipboard content has changed, proceeding to save.");
                     _lastClipboardContent = clipboardText;
                     await SaveClipboardContentAsync(clipboardText);
                 }
@@ -113,18 +114,8 @@ public class ClipboardMonitor : IDisposable
         {
             try
             {
-                if (!_firstPollCompleted)
-                {
-                    _logger.LogInformation("Delaying first poll...");
-                    await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval));
-                    _firstPollCompleted = true;
-                    await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
-                }
-                else
-                {
-                    await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
-                    await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval), _cts.Token);
-                }
+                await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval), _cts.Token);
+                await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
             }
             catch (Exception ex) when (ex is not TaskCanceledException)
             {
