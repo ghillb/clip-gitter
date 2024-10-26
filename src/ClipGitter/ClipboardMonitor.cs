@@ -83,18 +83,21 @@ public class ClipboardMonitor : IDisposable
                 string filePath = Path.Combine(_options.RepoPath, "clipboard.txt");
                 await File.AppendAllTextAsync(filePath, entry);
                 await _gitManager.CommitAndPushAsync("clipboard.txt", $"Added clipboard entry #{_counter}", _options.EnvFilePath);
+                _logger.LogInformation($"Clipboard content committed and pushed to {filePath}");
             }
             else if (!_options.NoHistory)
             {
                 var filename = $"clipboard_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
                 await File.WriteAllTextAsync(Path.Combine(_options.RepoPath, filename), content);
                 await _gitManager.CommitAndPushAsync(filename, "Add new clipboard content", _options.EnvFilePath);
+                _logger.LogInformation($"Clipboard content committed and pushed to {filename}");
             }
             else
             {
                 var filename = "clipboard.txt";
                 await File.WriteAllTextAsync(Path.Combine(_options.RepoPath, filename), content);
                 await _gitManager.CommitAndForcePushAsync(filename, _options.EnvFilePath);
+                _logger.LogInformation($"Clipboard content committed and pushed to {filename}");
             }
         }
         catch (Exception ex)
@@ -109,7 +112,7 @@ public class ClipboardMonitor : IDisposable
         {
             try
             {
-                await _gitManager.PullChangesAsync(_options.EnvFilePath);
+                await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
                 await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval), _cts.Token);
             }
             catch (Exception ex) when (ex is not TaskCanceledException)

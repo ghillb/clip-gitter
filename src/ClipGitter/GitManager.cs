@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using ClipGitter;
+using System.Text;
 
 namespace ClipGitter;
 
@@ -59,9 +60,11 @@ public class GitManager
             try
             {
                 using var repo = new Repository(_repoPath);
+                _logger.LogInformation($"Staging file: {filename}");
                 Commands.Stage(repo, filename);
                 var signature = repo.Config.BuildSignature(DateTimeOffset.Now);
                 repo.Commit(message, signature, signature);
+                _logger.LogInformation($"Committed changes: {message}");
                 var remote = repo.Network.Remotes["origin"];
                 if (remote != null)
                 {
@@ -70,6 +73,7 @@ public class GitManager
                         CredentialsProvider = (_url, _user, _cred) => GetCredentials(envFilePath)
                     };
                     repo.Network.Push(remote, @"refs/heads/master", pushOptions);
+                    _logger.LogInformation($"Pushed changes to remote: {remote.Name}");
                 }
             }
             catch (Exception ex)
@@ -87,6 +91,7 @@ public class GitManager
             try
             {
                 using var repo = new Repository(_repoPath);
+                _logger.LogInformation($"Staging file: {filename}");
                 Commands.Stage(repo, filename);
                 var signature = repo.Config.BuildSignature(DateTimeOffset.Now);
                 var message = "Update clipboard content";
@@ -99,6 +104,7 @@ public class GitManager
                 {
                     repo.Commit(message, signature, signature);
                 }
+                _logger.LogInformation($"Committed changes: {message}");
                 var remote = repo.Network.Remotes["origin"];
                 if (remote != null)
                 {
@@ -108,6 +114,7 @@ public class GitManager
                     };
                     var refSpec = $"+{repo.Head.CanonicalName}";
                     repo.Network.Push(remote, refSpec, pushOptions);
+                    _logger.LogInformation($"Force pushed changes to remote: {remote.Name}");
                 }
             }
             catch (Exception ex)
@@ -118,7 +125,7 @@ public class GitManager
         });
     }
 
-    public async Task PullChangesAsync(string envFilePath)
+    public async Task PullChangesAsync(string envFilePath, string encryptionPassword)
     {
         await Task.Run(() =>
         {
@@ -127,6 +134,7 @@ public class GitManager
                 using var repo = new Repository(_repoPath);
                 if (repo.Head.RemoteName != null)
                 {
+                    var oldTip = repo.Head.Tip;
                     var pullOptions = new PullOptions
                     {
                         FetchOptions = new FetchOptions
@@ -135,7 +143,40 @@ public class GitManager
                         }
                     };
                     var signature = repo.Config.BuildSignature(DateTimeOffset.Now);
-                    Commands.Pull(repo, signature, pullOptions);
+                    var result = Commands.Pull(repo, signature, pullOptions);
+                    var newTip = repo.Head.Tip;
+
+                    if (oldTip.Sha != newTip.Sha)
+                    {
+                        _logger.LogInformation($"Pulled changes from remote: {repo.Head.RemoteName}");
+                        foreach (var change in repo.Diff.Compare<TreeChanges>(oldTip?.Tree, newTip?.Tree))
+                        {
+                            if (change.Status == ChangeKind.Added || change.Status == ChangeKind.Modified)
+                            {
+                                try
+                                {
+                                    var content = File.ReadAllText(Path.Combine(_repoPath, change.Path));
+                                    if (!string.IsNullOrEmpty(encryptionPassword))
+                                    {
+                                        try
+                                        {
+                                            content = EncryptionManager.Decrypt(content, encryptionPassword);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError(ex, $"Error decrypting pulled content for {change.Path}");
+                                            continue;
+                                        }
+                                    }
+                                    _logger.LogInformation($"Pulled content for {change.Path}:\n{content}");
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError(ex, $"Error reading pulled content for {change.Path}");
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
