@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using LibGit2Sharp;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using TextCopy;
 using System.IO;
 using ClipGitter;
@@ -14,7 +15,14 @@ namespace ClipGitter
         {
             var loggerFactory = LoggerFactory.Create(builder =>
             {
-                builder.AddConsole();
+                builder.AddConsole(options =>
+                {
+                    options.FormatterName = "CustomFormatter";
+                });
+                builder.AddSimpleConsole(options =>
+                {
+                    options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss] ";
+                });
             });
 
             await Parser.Default.ParseArguments<Options>(args)
