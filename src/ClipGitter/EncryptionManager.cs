@@ -1,15 +1,23 @@
 using System.Security.Cryptography;
+using System;
+using System.Text;
 
 namespace ClipGitter
 {
     public class EncryptionManager
     {
+        private static readonly byte[] _salt;
+
+        static EncryptionManager()
+        {
+            _salt = GenerateSalt(16);
+        }
+
         public static string Encrypt(string plainText, string password)
         {
             using (Aes aesAlg = Aes.Create())
             {
-                byte[] salt = GenerateSalt(16);
-                byte[] key = DeriveKey(password, salt, 10000);
+                byte[] key = DeriveKey(password, _salt, 10000);
                 aesAlg.Key = key;
                 aesAlg.IV = GenerateSalt(16);
 
@@ -23,7 +31,13 @@ namespace ClipGitter
                         {
                             swEncrypt.Write(plainText);
                         }
-                        return Convert.ToBase64String(msEncrypt.ToArray());
+                        byte[] ciphertext = msEncrypt.ToArray();
+                        byte[] iv = aesAlg.IV;
+                        byte[] combined = new byte[_salt.Length + ciphertext.Length + iv.Length];
+                        Array.Copy(_salt, combined, _salt.Length);
+                        Array.Copy(ciphertext, 0, combined, _salt.Length, ciphertext.Length);
+                        Array.Copy(iv, 0, combined, _salt.Length + ciphertext.Length, iv.Length);
+                        return Convert.ToBase64String(combined);
                     }
                 }
             }
@@ -33,15 +47,21 @@ namespace ClipGitter
         {
             using (Aes aesAlg = Aes.Create())
             {
-                byte[] salt = GenerateSalt(16);
+                byte[] combined = Convert.FromBase64String(cipherText);
+                byte[] salt = new byte[16];
+                Array.Copy(combined, salt, 16);
                 byte[] key = DeriveKey(password, salt, 10000);
                 aesAlg.Key = key;
-                aesAlg.IV = GenerateSalt(16);
+
+                // Extract IV from ciphertext
+                byte[] iv = new byte[16];
+                Array.Copy(combined, combined.Length - 16, iv, 0, 16);
+                aesAlg.IV = iv;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
                 try
                 {
-                    using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+                    using (MemoryStream msDecrypt = new MemoryStream(combined, 16, combined.Length - 32))
                     {
                         using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
