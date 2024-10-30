@@ -113,8 +113,8 @@ Run the application from the command line with the following syntax:
 ### Non-History Mode
 - All clipboard content saved to `clipboard.txt`
 - File is overwritten with each new clipboard content
-- Git history is not preserved (uses commit amend)
-- Force pushes to keep repository clean
+- Each change creates a new commit
+- Normal Git push operations
 
 ## Error Handling
 

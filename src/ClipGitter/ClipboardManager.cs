@@ -87,7 +87,7 @@ public class ClipboardManager : IDisposable
             {
                 var filename = "clipboard.txt";
                 await File.WriteAllTextAsync(Path.Combine(_options.RepoPath, filename), content);
-                await _gitManager.CommitAndForcePushAsync(filename, _options.EnvFilePath);
+                await _gitManager.CommitAndPushAsync(filename, "Update clipboard content", _options.EnvFilePath);
                 _logger.LogInformation($"Clipboard content committed and pushed to {filename}");
             }
         }

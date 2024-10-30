@@ -7,10 +7,10 @@ ClipGitter is a Windows command-line application that monitors the system clipbo
 **2. Functional Requirements:**
 
 * **Clipboard Monitoring:** Continuously monitor the clipboard for changes.  Upon detecting new content, the application should save the content to the specified Git repository.
-* **Git Repository Interaction:** The application must interact with a Git repository to add, commit, and push changes.  Support for both standard and force pushes is required.
+* **Git Repository Interaction:** The application must interact with a Git repository to add, commit, and push changes.
 * **Operational Modes:**
     * **History Mode (Default):** Each clipboard change creates a new file with a timestamp and a new commit in the Git repository.
-    * **Non-History Mode:** Clipboard content is saved to a single file (`clip.txt`), overwriting previous content.  The latest commit is amended and force-pushed.
+    * **Non-History Mode:** Clipboard content is saved to a single file (`clipboard.txt`), overwriting previous content. Each change creates a new commit.
 * **Configuration:** The application must be configurable via command-line arguments:
     * `--repo`: Path to the Git repository (required).
     * `--poll-interval`: Polling interval for remote changes (default: 30 seconds, optional).
