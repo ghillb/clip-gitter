@@ -15,7 +15,6 @@ public class ClipboardMonitor : IDisposable
     private readonly CancellationTokenSource _cts = new();
     private bool _disposed;
     private readonly IClipboard _clipboard;
-    private static int _counter = 0;
 
     public ClipboardMonitor(ILogger<ClipboardMonitor> logger, GitManager gitManager, Options options)
     {
@@ -77,17 +76,7 @@ public class ClipboardMonitor : IDisposable
                 content = EncryptionManager.Encrypt(content, _options.EncryptionPassword);
             }
 
-            if (_options.SingleFile)
-            {
-                _counter++;
-                string timestamp = DateTime.UtcNow.ToString("o");
-                string entry = $"#{_counter} - {timestamp}\n\n{content}\n\n#{_counter} - END\n";
-                string filePath = Path.Combine(_options.RepoPath, "clipboard.txt");
-                await File.AppendAllTextAsync(filePath, entry);
-                await _gitManager.CommitAndPushAsync("clipboard.txt", $"Added clipboard entry #{_counter}", _options.EnvFilePath);
-                _logger.LogInformation($"Clipboard content committed and pushed to {filePath}");
-            }
-            else if (!_options.NoHistory)
+            if (!_options.NoHistory)
             {
                 var filename = $"clipboard_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
                 await File.WriteAllTextAsync(Path.Combine(_options.RepoPath, filename), content);

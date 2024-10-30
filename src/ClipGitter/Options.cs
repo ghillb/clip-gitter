@@ -16,9 +16,6 @@ public class Options
     [Option('e', "env-file", HelpText = "Path to the .env file")]
     public string EnvFilePath { get; set; } = string.Empty;
 
-    [Option("single-file", HelpText = "Save clipboard content to a single file")]
-    public bool SingleFile { get; set; }
-
     [Option("encryption-pw", HelpText = "Password for clipboard encryption")]
     public string EncryptionPassword { get; set; } = string.Empty;
 

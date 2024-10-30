@@ -49,7 +49,6 @@ public class Program
                 Console.WriteLine($"Repository: {options.RepoPath}");
                 Console.WriteLine($"Poll interval: {options.PollInterval} seconds");
                 Console.WriteLine($"History mode: {!options.NoHistory}");
-                Console.WriteLine($"Single-file mode: {options.SingleFile}");
                 Console.WriteLine($"Env file path: {options.EnvFilePath}");
                 Console.WriteLine($"Encryption enabled: {!string.IsNullOrEmpty(options.EncryptionPassword)}");
                 Console.WriteLine($"Pull only mode: {options.PullOnly}");
