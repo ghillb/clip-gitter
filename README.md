@@ -144,6 +144,6 @@ Run the application from the command line with the following syntax:
 The source code includes:
 - Command line argument parsing using CommandLineParser
 - Git operations using LibGit2Sharp
-- Cross-platform clipboard access using TextCopy
 - Asynchronous operations and error handling
-- **AES-256 Encryption with PBKDF2HMAC key derivation**
+- Clipboard access using TextCopy
+- AES-256 Encryption
