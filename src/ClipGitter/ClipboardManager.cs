@@ -6,9 +6,9 @@ using TextCopy;
 using ClipGitter;
 
 namespace ClipGitter;
-public class ClipboardMonitor : IDisposable
+public class ClipboardManager : IDisposable
 {
-    private readonly ILogger<ClipboardMonitor> _logger;
+    private readonly ILogger<ClipboardManager> _logger;
     private readonly GitManager _gitManager;
     private readonly Options _options;
     private string? _lastClipboardContent;
@@ -16,7 +16,7 @@ public class ClipboardMonitor : IDisposable
     private bool _disposed;
     private readonly IClipboard _clipboard;
 
-    public ClipboardMonitor(ILogger<ClipboardMonitor> logger, GitManager gitManager, Options options)
+    public ClipboardManager(ILogger<ClipboardManager> logger, GitManager gitManager, Options options)
     {
         _logger = logger;
         _gitManager = gitManager;

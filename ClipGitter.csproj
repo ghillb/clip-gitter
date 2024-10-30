@@ -17,7 +17,7 @@
   <ItemGroup>
     <Compile Include="src/ClipGitter/Options.cs" />
     <Compile Include="src/ClipGitter/Program.cs" />
-    <Compile Include="src/ClipGitter/ClipboardMonitor.cs" />
+    <Compile Include="src/ClipGitter/ClipboardManager.cs" />
     <Compile Include="src/ClipGitter/GitManager.cs" />
     <Compile Include="src/ClipGitter/EncryptionManager.cs" /> <!-- Added this line -->
   </ItemGroup>

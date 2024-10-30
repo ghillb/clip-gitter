@@ -40,10 +40,10 @@ public class Program
                 }
 
                 var gitLogger = loggerFactory.CreateLogger<GitManager>();
-                var monitorLogger = loggerFactory.CreateLogger<ClipboardMonitor>();
+                var clipboardLogger = loggerFactory.CreateLogger<ClipboardManager>();
 
                 var gitManager = new GitManager(gitLogger, options.RepoPath);
-                using var monitor = new ClipboardMonitor(monitorLogger, gitManager, options);
+                using var clipboardManager = new ClipboardManager(clipboardLogger, gitManager, options);
 
                 Console.WriteLine($"Starting clipboard monitor...");
                 Console.WriteLine($"Repository: {options.RepoPath}");
@@ -54,7 +54,7 @@ public class Program
                 Console.WriteLine($"Pull only mode: {options.PullOnly}");
                 Console.WriteLine("Press Ctrl+C to exit");
 
-                await monitor.StartMonitoringAsync();
+                await clipboardManager.StartMonitoringAsync();
             });
     }
 }
