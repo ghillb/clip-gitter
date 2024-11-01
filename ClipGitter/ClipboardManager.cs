@@ -104,7 +104,14 @@ public class ClipboardManager : IDisposable
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(_options.PollInterval), _cts.Token);
-                await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
+                var pulledContent = await _gitManager.PullChangesAsync(_options.EnvFilePath, _options.EncryptionPassword);
+                
+                if (!string.IsNullOrEmpty(pulledContent) && pulledContent != _lastClipboardContent)
+                {
+                    _logger.LogInformation("Clipboard updated with pulled content");
+                    await _clipboard.SetTextAsync(pulledContent);
+                    _lastClipboardContent = pulledContent;
+                }
             }
             catch (Exception ex) when (ex is not TaskCanceledException)
             {

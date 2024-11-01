@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ClipGitter;
 using System.Text;
+using System.Collections.Generic;
 
 namespace ClipGitter;
 
@@ -125,9 +126,9 @@ public class GitManager
         });
     }
 
-    public async Task PullChangesAsync(string envFilePath, string encryptionPassword)
+    public async Task<string?> PullChangesAsync(string envFilePath, string encryptionPassword)
     {
-        await Task.Run(() =>
+        return await Task.Run(() =>
         {
             try
             {
@@ -169,6 +170,7 @@ public class GitManager
                                         }
                                     }
                                     _logger.LogInformation($"Pulled content for {change.Path}:\n{content}");
+                                    return content;
                                 }
                                 catch (Exception ex)
                                 {
@@ -178,6 +180,7 @@ public class GitManager
                         }
                     }
                 }
+                return null;
             }
             catch (Exception ex)
             {
