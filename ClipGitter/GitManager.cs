@@ -169,7 +169,7 @@ public class GitManager
                                             continue;
                                         }
                                     }
-                                    _logger.LogInformation($"Pulled content for {change.Path}:\n{content}");
+                                    _logger.LogInformation($"📋Pulled content for {change.Path}:\n{content}");
                                     return content;
                                 }
                                 catch (Exception ex)

@@ -6,12 +6,15 @@ using TextCopy;
 using System.IO;
 using ClipGitter;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace ClipGitter;
 public class Program
 {
     public static async Task Main(string[] args)
     {
+        Console.OutputEncoding = Encoding.UTF8;
+
         var loggerFactory = LoggerFactory.Create(builder =>
         {
             builder.AddConsole(options =>
