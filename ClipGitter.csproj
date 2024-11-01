@@ -15,11 +15,11 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="src/ClipGitter/Options.cs" />
-    <Compile Include="src/ClipGitter/Program.cs" />
-    <Compile Include="src/ClipGitter/ClipboardManager.cs" />
-    <Compile Include="src/ClipGitter/GitManager.cs" />
-    <Compile Include="src/ClipGitter/EncryptionManager.cs" /> <!-- Added this line -->
+    <Compile Include="ClipGitter/Options.cs" />
+    <Compile Include="ClipGitter/Program.cs" />
+    <Compile Include="ClipGitter/ClipboardManager.cs" />
+    <Compile Include="ClipGitter/GitManager.cs" />
+    <Compile Include="ClipGitter/EncryptionManager.cs" /> <!-- Added this line -->
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
