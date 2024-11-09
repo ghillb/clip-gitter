@@ -40,13 +40,11 @@ USERNAME=your_username
 PASSWORD=your_password_or_personal_access_token
 ```
 
-**Important:** Replace `your_github_username` and `your_github_password_or_personal_access_token` with your actual GitHub username and password or personal access token. Using a personal access token is recommended for security.
 
 ## Building from Source
 
 ### Requirements for Building
 - .NET 8.0 SDK
-- Git installed
 
 ### Build Steps
 
@@ -59,8 +57,6 @@ PASSWORD=your_password_or_personal_access_token
    ```
    bin/Release/net8.0/win-x64/publish/ClipGitter.exe
    ```
-
-Important: Make sure to use the executable from the `publish` directory, as this contains all required dependencies.
 
 ## Usage
 
@@ -84,7 +80,7 @@ Run the application from the command line with the following syntax:
 
 1. Basic usage with default settings:
    ```powershell
-   .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo"
+   .\ClipGitter.exe --repo "C:\...\clipboard-repo"
    ```
 
 2. Non-history mode with custom polling interval and .env file:
@@ -94,27 +90,28 @@ Run the application from the command line with the following syntax:
 
 3. Encryption enabled:
    ```powershell
-   .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --encryption-pw "MySecretPassword"
+   .\ClipGitter.exe --repo "C:\...\clipboard-repo" --encryption-pw "MyPassword"
    ```
 
 4. Pull-only mode:
     ```powershell
-    .\ClipGitter.exe --repo "C:\Projects\my-clipboard-repo" --pull-only
+    .\ClipGitter.exe --repo "C:\...\clipboard-repo" --pull-only
     ```
 
 ## Operating Modes
 
 ### History Mode (Default)
+
 - Each clipboard change creates a new file with timestamp
 - Example: `clipboard_20240126_123456.txt`
 - All changes are preserved in Git history
 - Normal Git push operations
 
 ### Non-History Mode
+
 - All clipboard content saved to `clipboard.txt`
 - File is overwritten with each new clipboard content
 - Each change creates a new commit
-- Normal Git push operations
 
 ## Error Handling
 
@@ -134,5 +131,5 @@ The source code includes:
 - Command line argument parsing using CommandLineParser
 - Git operations using LibGit2Sharp
 - Asynchronous operations and error handling
-- Clipboard access using TextCopy
+- Clipboard access using TextCopy library
 - AES-256 Encryption
